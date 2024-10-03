@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import Sidebar from './component/Sidebar'
+import Navbar from './component/Navbar'
+import Home from './screens/Home'
+import {BrowserRouter, Route,Routes} from 'react-router-dom'
 
 function App() {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen(prevState => !prevState);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <BrowserRouter>
+    <div className='bg-backgrd'>
+          <Sidebar isOpen={isDrawerOpen} />
+          <Navbar onToggleDrawer={toggleDrawer} />
+          <div>
+            <Routes>
+              <Route path="/" element={<Home />} />
+            </Routes>
+          </div>
+        </div>
+        </BrowserRouter>
+  )
 }
 
-export default App;
+export default App
