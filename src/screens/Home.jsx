@@ -7,6 +7,7 @@ import HollowPie from '../component/HollowPie'
 import moment from 'moment/moment'
 import axios from 'axios'
 import PeakHour from '../component/PeakHour'
+import { DatePicker } from 'antd';
 
 
 function Home() {
@@ -20,6 +21,13 @@ function Home() {
   const [lineData, setLineData] = useState(new Array(30).fill(0));
   const [males, setMales] = useState('')
   const [females, setFemales] = useState('')
+  const [kidandold, setKidandold] = useState('')
+  const [kidandold1, setKidandold1] = useState('')
+  const [childs, setchilds] = useState('')
+  const [mans, setMans] = useState('')
+  const [olds, setolds] = useState('')
+  const [elders, setelders] = useState('')
+  
 
 useEffect(()=>{
 DailyVisit()
@@ -29,6 +37,8 @@ monthVisit()
 allGenderVisitor()
 peakHour()
 getmaleandwomendata()
+oldandkid()
+allGender()
 },[])
 
   const DailyVisit = async () => {
@@ -149,9 +159,9 @@ const peakHour = async () => {
   const currentDate = new Date();
   const endDate = currentDate.toISOString().split('T')[0];
   const startDate = new Date(currentDate);
-  startDate.setDate(currentDate.getDate() - 1);
+  startDate.setDate(currentDate.getDate() - 2);
   const formattedStartDate = startDate.toISOString().split('T')[0];
-
+  console.log('peak',formattedStartDate,endDate);
   const params = {
       api_name: 'peak_hours',
       branch_id: 3,
@@ -165,6 +175,7 @@ const peakHour = async () => {
           visitHour: item.visitHour,
           totalUniqueCount: item.totalCount,
       }));
+      console.log('transform',transformedData);
       setpeakHourData(transformedData);
   } catch (error) {
       console.error('Error:', error);
@@ -184,9 +195,45 @@ const getmaleandwomendata = async () => {
 
   try {
       const response = await axios.get('https://br42legudi.execute-api.ap-south-1.amazonaws.com/default/lambda-batch-process-dashboard', { params });
-      // setFemales(response.data[0].count);
-      // setMales(response.data[1].count);
-      console.log('sds',response.data);
+      setFemales(response.data[0].count);
+      setMales(response.data[1].count);
+      // console.log('sds',response.data);
+  } catch (error) {
+      console.error('Error:', error);
+  }
+};
+const oldandkid = async () => {
+  const params = {
+      api_name: 'adult_kids_count',
+      branch_id: 3,
+      start_date: '2024-10-01' ,
+      end_date: '2024-10-04'  ,
+  };
+
+  try {
+      const response = await axios.get('https://br42legudi.execute-api.ap-south-1.amazonaws.com/default/lambda-batch-process-dashboard', { params });
+      setKidandold(response.data[1].count);
+      setKidandold1(response.data[0].count);
+      console.log('dddd',response.data);
+  } catch (error) {
+      console.error('Error:', error);
+  }
+};
+const allGender = async () => {
+  
+  const params = {
+      api_name: 'age_group_count',
+      branch_id: 3,
+      start_date:'2024-09-01',
+      end_date: '2024-09-30',
+  };
+
+  try {
+      const response = await axios.get('https://br42legudi.execute-api.ap-south-1.amazonaws.com/default/lambda-batch-process-dashboard', { params });
+      setchilds(response.data[3].count);
+      setMans(response.data[0].count);
+      setolds(response.data[1].count);
+      setelders(response.data[2].count);
   } catch (error) {
       console.error('Error:', error);
   }
@@ -197,6 +244,17 @@ const getmaleandwomendata = async () => {
 // console.log(start,end);
   return (
     <div className='p-4 md:w-full lg:pl-36 bg-backgrd'>
+      <div className="relative h-12 justify-evenly bg-white rounded-sm  md:mx-5 lg:mx-7 flex items-center">
+    <div className="flex-1 mx-2"> {/* Flex-1 to take 50% space and add margin for spacing */}
+        <DatePicker className="w-full" /> {/* Ensure DatePicker takes full width */}
+    </div>
+    <div className="flex-1 mx-2"> {/* Flex-1 to take 50% space and add margin for spacing */}
+        <DatePicker className="w-full" /> {/* Ensure DatePicker takes full width */}
+    </div>
+    <button className="m-2 text-center justify-center flex items-center bg-blue-500 h-8 text-white w-16 p-2 rounded">
+        Submit
+    </button>
+</div>
     <div className='relative flex flex-col md:flex-row w-full justify-evenly md:mt-6 gap-y-4'>
       <Updatecard className='w-full mb-4 md:mb-0 md:w-auto' txt='Daily Visits' data={dailyVisit} />
       <Updatecard className='w-full mb-4 md:mb-0 md:w-auto' txt='Yesterday Visits' data={yesterdayVisit} />
@@ -219,7 +277,7 @@ const getmaleandwomendata = async () => {
 </div>
 <div className='relative flex bg-white rounded-sm mt-6 md:mx-5 lg:mx-7'>
   <div className='flex w-full p-5 gap-x-3'>
-  <div className="flex-1"> 
+  <div className="flex-1 "> 
     <h1 className="text-lg">Global Sales by Top Locations</h1>
     <p className="text-sm text-gray-400 mb-4">All Products That Were Shipped</p>
     <hr className="border-t-1 border-gray-300 mb-4"/>
