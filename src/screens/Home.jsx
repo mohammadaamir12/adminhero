@@ -27,19 +27,25 @@ function Home() {
   const [mans, setMans] = useState('')
   const [olds, setolds] = useState('')
   const [elders, setelders] = useState('')
-  
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [submittedStartDate, setSubmittedStartDate] = useState('');
+    const [submittedEndDate, setSubmittedEndDate] = useState('');
+  useEffect(()=>{
+    DailyVisit()
+    YesterdayVisit()
+    weekVisit()
+    monthVisit()
+  },[])
 
 useEffect(()=>{
-DailyVisit()
-YesterdayVisit()
-weekVisit()
-monthVisit()
+
 allGenderVisitor()
 peakHour()
 getmaleandwomendata()
 oldandkid()
 allGender()
-},[])
+},[start,end])
 
   const DailyVisit = async () => {
     const params = {
@@ -136,8 +142,8 @@ const allGenderVisitor = async () => {
   const params = {
       api_name: 'unique_head_count',
       branch_id: 3,
-      start_date:formattedStartDate ,
-      end_date: formattedEndDate,
+      start_date:start ,
+      end_date: end,
   };
 
   try {
@@ -189,8 +195,8 @@ const getmaleandwomendata = async () => {
   const params = {
       api_name: 'gender_count',
       branch_id: 3,
-      start_date:'2024-09-01',
-      end_date: '2024-09-30',
+      start_date:submittedStartDate,
+      end_date: submittedEndDate,
   };
 
   try {
@@ -206,8 +212,8 @@ const oldandkid = async () => {
   const params = {
       api_name: 'adult_kids_count',
       branch_id: 3,
-      start_date: '2024-10-01' ,
-      end_date: '2024-10-04'  ,
+      start_date: submittedStartDate ,
+      end_date: submittedEndDate  ,
   };
 
   try {
@@ -220,12 +226,13 @@ const oldandkid = async () => {
   }
 };
 const allGender = async () => {
-  
+  console.log('dddddd',start,end)
   const params = {
+  
       api_name: 'age_group_count',
       branch_id: 3,
-      start_date:'2024-09-01',
-      end_date: '2024-09-30',
+      start_date:submittedStartDate,
+      end_date: submittedEndDate,
   };
 
   try {
@@ -239,22 +246,58 @@ const allGender = async () => {
   }
 };
 
+const handleStartDateChange = (date) => {
+  console.log('checking',date);
+        setStartDate(date);
+    };
+
+    const handleEndDateChange = (date) => {
+       console.log('checking',date);
+        setEndDate(date);
+    };
+
+    const handleSubmit = () => {
+           const formattedStartDate = startDate ? moment(startDate.$d).format('YYYY-MM-DD') : '';
+        const formattedEndDate = endDate ? moment(endDate.$d).format('YYYY-MM-DD') : '';
+
+        setSubmittedStartDate(formattedStartDate);
+        setSubmittedEndDate(formattedEndDate);
+
+        console.log('Submitted Start Date:', formattedStartDate);
+        console.log('Submitted End Date:', formattedEndDate);
+       
+       
+    };
 
 
-// console.log(start,end);
+
+
   return (
     <div className='p-4 md:w-full lg:pl-36 bg-backgrd'>
-      <div className="relative h-12 justify-evenly bg-white rounded-sm  md:mx-5 lg:mx-7 flex items-center">
-    <div className="flex-1 mx-2"> {/* Flex-1 to take 50% space and add margin for spacing */}
-        <DatePicker className="w-full" /> {/* Ensure DatePicker takes full width */}
-    </div>
-    <div className="flex-1 mx-2"> {/* Flex-1 to take 50% space and add margin for spacing */}
-        <DatePicker className="w-full" /> {/* Ensure DatePicker takes full width */}
-    </div>
-    <button className="m-2 text-center justify-center flex items-center bg-blue-500 h-8 text-white w-16 p-2 rounded">
-        Submit
-    </button>
-</div>
+   <div className="relative h-12 justify-evenly bg-white rounded-sm md:mx-5 lg:mx-7 flex items-center">
+            <div className="flex-1 mx-2">
+                <DatePicker
+                    className="w-full"
+                    selected={startDate}
+                    onChange={handleStartDateChange}
+                    placeholderText="Select Start Date"
+                />
+            </div>
+            <div className="flex-1 mx-2">
+                <DatePicker
+                    className="w-full"
+                    selected={endDate}
+                    onChange={handleEndDateChange}
+                    placeholderText="Select End Date"
+                />
+            </div>
+            <button
+                className="m-2 text-center justify-center flex items-center bg-blue-500 h-8 text-white w-16 p-2 rounded"
+                onClick={handleSubmit}
+            >
+                Submit
+            </button>
+        </div>
     <div className='relative flex flex-col md:flex-row w-full justify-evenly md:mt-6 gap-y-4'>
       <Updatecard className='w-full mb-4 md:mb-0 md:w-auto' txt='Daily Visits' data={dailyVisit} />
       <Updatecard className='w-full mb-4 md:mb-0 md:w-auto' txt='Yesterday Visits' data={yesterdayVisit} />
@@ -325,10 +368,10 @@ const allGender = async () => {
 </div>
 <div className='md:flex lg:flex flex-row md:gap-x-6 lg:gap-x-6 justify-center items-center  rounded-sm mt-6 md:mx-5 lg:mx-7'>
   <div className='flex-1 flex justify-center p-4 bg-white md:mb-0 lg:mb-0 mb-4'>
-    <HollowPie male={males} female={females} />
+    <HollowPie male={males} female={females} title='Male and Female Visitors' showMalesAndFemales='true'/>
   </div>
   <div className='flex-1 flex justify-center p-4 bg-white'>
-    <HollowPie male={males} female={females} />
+    <HollowPie male={kidandold} female={kidandold1} title='Kid and Adult Vistors' />
   </div>
 </div>
 
