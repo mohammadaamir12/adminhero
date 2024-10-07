@@ -274,7 +274,7 @@ const handleStartDateChange = (date) => {
 
   return (
     <div className='p-4 md:w-full lg:pl-36 bg-backgrd'>
-   <div className="relative h-12 justify-evenly bg-white rounded-sm md:mx-5 lg:mx-7 flex items-center">
+   <div className="relative h-12 justify-evenly bg-white rounded-sm flex items-center">
             <div className="flex-1 mx-2">
                 <DatePicker
                     className="w-full"
