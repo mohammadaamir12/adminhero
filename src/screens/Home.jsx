@@ -31,21 +31,31 @@ function Home() {
   const [endDate, setEndDate] = useState(null);
   const [submittedStartDate, setSubmittedStartDate] = useState('');
     const [submittedEndDate, setSubmittedEndDate] = useState('');
-  useEffect(()=>{
-    DailyVisit()
-    YesterdayVisit()
-    weekVisit()
-    monthVisit()
-  },[])
-
-useEffect(()=>{
-
-allGenderVisitor()
-peakHour()
-getmaleandwomendata()
-oldandkid()
-allGender()
-},[start,end])
+    useEffect(() => {
+      fetchInitialData();
+    }, []);
+  
+    useEffect(() => {
+      if (submittedStartDate && submittedEndDate) {
+        fetchDataOnDateChange();
+      }
+    }, [submittedStartDate, submittedEndDate]);
+  
+    const fetchInitialData = async () => {
+      await DailyVisit();
+      await YesterdayVisit();
+      await weekVisit();
+      await monthVisit();
+      await allGenderVisitor();
+    };
+  
+    const fetchDataOnDateChange = async () => {
+   
+      await peakHour();
+      await getmaleandwomendata();
+      await oldandkid();
+      await allGender();
+    };
 
   const DailyVisit = async () => {
     const params = {
@@ -142,8 +152,8 @@ const allGenderVisitor = async () => {
   const params = {
       api_name: 'unique_head_count',
       branch_id: 3,
-      start_date:start ,
-      end_date: end,
+      start_date:formattedStartDate ,
+      end_date: formattedEndDate,
   };
 
   try {
@@ -181,7 +191,7 @@ const peakHour = async () => {
           visitHour: item.visitHour,
           totalUniqueCount: item.totalCount,
       }));
-      console.log('transform',transformedData);
+      console.log('transform',transformedData,response.data);
       setpeakHourData(transformedData);
   } catch (error) {
       console.error('Error:', error);
@@ -198,13 +208,20 @@ const getmaleandwomendata = async () => {
       start_date:submittedStartDate,
       end_date: submittedEndDate,
   };
-
   try {
-      const response = await axios.get('https://br42legudi.execute-api.ap-south-1.amazonaws.com/default/lambda-batch-process-dashboard', { params });
-      setFemales(response.data[0].count);
-      setMales(response.data[1].count);
-      // console.log('sds',response.data);
-  } catch (error) {
+    const response = await axios.get('https://br42legudi.execute-api.ap-south-1.amazonaws.com/default/lambda-batch-process-dashboard', { params });
+    
+    if (response.data.length === 0) {
+        // Set to null if response is empty
+        setFemales('');
+        setMales('');
+    } else {
+      setFemales(response.data[0]?.count ?? null);
+      setMales(response.data[1]?.count ?? null);
+    }
+
+    console.log('Response data:', response.data);
+} catch (error) {
       console.error('Error:', error);
   }
 };
@@ -217,11 +234,19 @@ const oldandkid = async () => {
   };
 
   try {
-      const response = await axios.get('https://br42legudi.execute-api.ap-south-1.amazonaws.com/default/lambda-batch-process-dashboard', { params });
-      setKidandold(response.data[1].count);
-      setKidandold1(response.data[0].count);
-      console.log('dddd',response.data);
-  } catch (error) {
+    const response = await axios.get('https://br42legudi.execute-api.ap-south-1.amazonaws.com/default/lambda-batch-process-dashboard', { params });
+    
+    if (response.data.length === 0) {
+        // Set to null if response is empty
+        setKidandold('');
+        setKidandold1('');
+    } else {
+        setKidandold(response.data[1]?.count ?? null);
+        setKidandold1(response.data[0]?.count ?? null);
+    }
+
+    console.log('Response data:', response.data);
+}  catch (error) {
       console.error('Error:', error);
   }
 };
@@ -262,14 +287,13 @@ const handleStartDateChange = (date) => {
 
         setSubmittedStartDate(formattedStartDate);
         setSubmittedEndDate(formattedEndDate);
-
-        console.log('Submitted Start Date:', formattedStartDate);
-        console.log('Submitted End Date:', formattedEndDate);
+      
+        
        
        
     };
 
-
+console.log('chumma',start,end);
 
 
   return (
@@ -318,54 +342,53 @@ const handleStartDateChange = (date) => {
     <LineCharts data={lineData}/>
   </div>
 </div>
-<div className='relative flex bg-white rounded-sm mt-6 md:mx-5 lg:mx-7'>
-  <div className='flex w-full p-5 gap-x-3'>
-  <div className="flex-1 "> 
+<div className='relative flex flex-col md:flex-row bg-white rounded-sm mt-6 md:mx-5 lg:mx-7'>
+  <div className='flex-1 p-5 gap-x-3'>
     <h1 className="text-lg">Global Sales by Top Locations</h1>
     <p className="text-sm text-gray-400 mb-4">All Products That Were Shipped</p>
     <hr className="border-t-1 border-gray-300 mb-4"/>
 
-    <div className="flex items-center mb-2 justify-evenly">
+    <div className="flex items-center mb-2 justify-between">
       <img src="flag1.png" alt="Country Flag" className="w-5 h-5 mr-2"/>
-      <span className=''>India</span>
-      <span className=''>566</span>
-      <span className=''>53.33%</span>
+      <span>India</span>
+      <span>566</span>
+      <span>53.33%</span>
     </div>
     <hr className="border-t-1 border-gray-300 mb-2"/>
-    <div className="flex items-center mb-2 justify-evenly">
+    <div className="flex items-center mb-2 justify-between">
       <img src="flag1.png" alt="Country Flag" className="w-5 h-5 mr-2"/>
-      <span className=''>China</span>
-      <span className=''>100</span>
-      <span className=''>10.33%</span>
+      <span>China</span>
+      <span>100</span>
+      <span>10.33%</span>
     </div>
     <hr className="border-t-1 border-gray-300 mb-2"/>
-    <div className="flex items-center mb-2 justify-evenly">
+    <div className="flex items-center mb-2 justify-between">
       <img src="flag1.png" alt="Country Flag" className="w-5 h-5 mr-2"/>
-      <span className=''>USA</span>
-      <span className=''>240</span>
-      <span className=''>13.99%</span>
+      <span>USA</span>
+      <span>240</span>
+      <span>13.99%</span>
     </div>
     <hr className="border-t-1 border-gray-300 mb-2"/>
-    <div className="flex items-center mb-2 justify-evenly">
+    <div className="flex items-center mb-2 justify-between">
       <img src="flag1.png" alt="Country Flag" className="w-5 h-5 mr-2"/>
-      <span className=''>Australia</span>
-      <span className=''>666</span>
-      <span className=''>83.03%</span>
+      <span>Australia</span>
+      <span>666</span>
+      <span>83.03%</span>
     </div>
     <hr className="border-t-1 border-gray-300 mb-2"/>
-    <div className="flex items-center mb-2 justify-evenly">
+    <div className="flex items-center mb-2 justify-between">
       <img src="flag1.png" alt="Country Flag" className="w-5 h-5 mr-2"/>
-      <span className=''>Europe</span>
-      <span className=''>100</span>
-      <span className=''>9.0%</span>
+      <span>Europe</span>
+      <span>100</span>
+      <span>9.0%</span>
     </div>
   </div>
   
-  <div className=' flex-1 p-4'> 
-    <img src={worldmap} />
-  </div>
+  <div className='flex-1 p-4'> 
+    <img src={worldmap} alt="World Map" />
   </div>
 </div>
+
 <div className='md:flex lg:flex flex-row md:gap-x-6 lg:gap-x-6 justify-center items-center  rounded-sm mt-6 md:mx-5 lg:mx-7'>
   <div className='flex-1 flex justify-center p-4 bg-white md:mb-0 lg:mb-0 mb-4'>
     <HollowPie male={males} female={females} title='Male and Female Visitors' showMalesAndFemales='true'/>
