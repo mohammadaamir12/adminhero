@@ -53,7 +53,7 @@ function Sidebar({ isOpen }) {
             <div className="flex items-center my-1 mb-6">
               <img src={hart} alt="Logo" className="w-6 h-6 filter invert" />
               <span className="text-white ml-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                Love
+                Planet
               </span>
             </div>
             <div className="flex items-center my-1 mb-6">
@@ -68,7 +68,7 @@ function Sidebar({ isOpen }) {
                 Logout
               </span>
             </div>
-            <div className="flex items-center my-1 mb-6">
+            {/* <div className="flex items-center my-1 mb-6">
               <img src={dough} alt="Logo" className="w-6 h-6 filter invert" />
               <span className="text-white ml-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 Logout
@@ -79,7 +79,7 @@ function Sidebar({ isOpen }) {
               <span className="text-white ml-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 Logout
               </span>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

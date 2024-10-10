@@ -9,6 +9,10 @@ import axios from "axios";
 import PeakHour from "../component/PeakHour";
 import { DatePicker } from "antd";
 import ShimmerEffect from "../component/ShimmerEffect";
+import child from "../assets/childs.jpg";
+import elder from "../assets/elders.jpg";
+import female from "../assets/manns.jpg";
+import male from "../assets/mans.jpg";
 
 function Home() {
   const [start, setStart] = useState(moment().format("YYYY-MM-DD"));
@@ -33,6 +37,12 @@ function Home() {
   const [loading1, setLoading1] = useState(false);
   const [submittedStartDate, setSubmittedStartDate] = useState("");
   const [submittedEndDate, setSubmittedEndDate] = useState("");
+  const [ageGroupCounts, setAgeGroupCounts] = useState({
+    kids: 0,
+    teens: 0,
+    men: 0,
+    elders: 0,
+  });
   useEffect(() => {
     fetchInitialData();
   }, []);
@@ -51,6 +61,7 @@ function Home() {
     await peakHour();
     await getmaleandwomendata();
     await oldandkid();
+    await allGender();
     await allGenderVisitor();
   };
 
@@ -58,7 +69,7 @@ function Home() {
     await peakHour();
     await getmaleandwomendata();
     await oldandkid();
-    // await allGender();
+    await allGender();
     await allGenderVisitor();
   };
 
@@ -306,29 +317,49 @@ function Home() {
       console.error("Error:", error);
     }
   };
-  // const allGender = async () => {
-  //   console.log("dddddd", start, end);
-  //   const params = {
-  //     api_name: "age_group_count",
-  //     branch_id: 3,
-  //     start_date: submittedStartDate,
-  //     end_date: submittedEndDate,
-  //   };
+  const allGender = async () => {
+    console.log("enter allll");
+    const params = {
+      api_name: "age_group_count",
+      branch_id: 3,
+      start_date: submittedStartDate === "" ? start : submittedStartDate,
+      end_date: submittedEndDate === "" ? start : submittedEndDate,
+    };
 
-  //   try {
-  //     const response = await axios.get(
-  //       "https://br42legudi.execute-api.ap-south-1.amazonaws.com/default/lambda-batch-process-dashboard",
-  //       { params }
-  //     );
-  //     setchilds(response.data[3].count);
-  //     setMans(response.data[0].count);
-  //     setolds(response.data[1].count);
-  //     setelders(response.data[2].count);
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  //   setLoading(false);
-  // };
+    try {
+      const response = await axios.get(
+        "https://br42legudi.execute-api.ap-south-1.amazonaws.com/default/lambda-batch-process-dashboard",
+        { params }
+      );
+      console.log("sdsdsdssds", response.data);
+      const data = response.data;
+      const counts = { kids: 0, teens: 0, men: 0, elders: 0 };
+      data.forEach((entry) => {
+        switch (entry.age_group) {
+          case "<18":
+            counts.kids += entry.count;
+            break;
+          case "18-25":
+            counts.teens += entry.count;
+            break;
+          case "26-30":
+          case "31-40":
+          case "41-50":
+            counts.men += entry.count;
+            break;
+          case "51-60":
+            counts.elders += entry.count;
+            break;
+          default:
+            break;
+        }
+      });
+      setAgeGroupCounts(counts);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    setLoading(false);
+  };
 
   const handleStartDateChange = (date) => {
     console.log("checking", date);
@@ -407,7 +438,7 @@ function Home() {
               />
             </svg>
           ) : (
-            "Submit"
+            "Search"
           )}
         </button>
       </div>
@@ -520,6 +551,49 @@ function Home() {
               title="Kid and Adult Vistors"
             />
           )}
+        </div>
+      </div>
+      {console.log("sfdfsd", ageGroupCounts.kids)}
+      <div className="relative flex flex-col md:flex-row justify-center items-center gap-x-24 bg-white rounded-sm mt-6 md:mx-5 lg:mx-7 p-4">
+        <div className="flex flex-col items-center">
+          <img
+            src={child}
+            alt="Image 1"
+            className="w-32 h-32 object-cover rounded-md"
+          />
+          <p className="mt-2 font-lg font-semibold text-center font-serif">
+            {ageGroupCounts.kids}
+          </p>
+        </div>
+        <div className="flex flex-col items-center">
+          <img
+            src={male}
+            alt="Image 2"
+            className="w-32 h-32 object-cover rounded-md"
+          />
+          <p className="mt-2 font-lg font-semibold text-center font-serif">
+            {ageGroupCounts.teens}
+          </p>
+        </div>
+        <div className="flex flex-col items-center">
+          <img
+            src={female}
+            alt="Image 3"
+            className="w-32 h-32 object-cover rounded-md"
+          />
+          <p className="mt-2 font-semibold font-lg text-center font-serif">
+            {ageGroupCounts.men}
+          </p>
+        </div>
+        <div className="flex flex-col items-center">
+          <img
+            src={elder}
+            alt="Image 4"
+            className="w-32 h-32 object-cover rounded-md"
+          />
+          <p className="mt-2 font-semibold font-lg text-center font-serif">
+            {ageGroupCounts.elders}
+          </p>
         </div>
       </div>
     </div>

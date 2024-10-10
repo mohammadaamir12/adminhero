@@ -1,80 +1,108 @@
-import React from 'react';
-import Chart from 'react-apexcharts';
+import React from "react";
+import Chart from "react-apexcharts";
 
 const BarChart = ({ weekData }) => {
   const hours = Array.from({ length: 24 }, (_, hour) => `${hour + 1}:00`);
 
   // Filter hours that have data
-  const filteredHours = hours.filter(hour => 
-    weekData.some(dayData => dayData.visitHour === hour.split(':')[0].padStart(2, '0'))
+  const filteredHours = hours.filter((hour) =>
+    weekData.some(
+      (dayData) => dayData.visitHour === hour.split(":")[0].padStart(2, "0")
+    )
   );
 
   // Update series data based on filtered hours
-  const series = [{
-    name: 'Unique Visits',
-    data: filteredHours.map(hour => {
-      const hourKey = hour.split(':')[0]; // Get the hour part (e.g., '1' from '1:00')
-      const foundData = weekData.find(dayData => dayData.visitHour === hourKey.padStart(2, '0')); // Pad single digits
-      return foundData ? foundData.totalUniqueCount : 0; // Return count or 0 if not found
-    }),
-  }];
+  const series = [
+    {
+      name: "Unique Visits",
+      data: filteredHours.map((hour) => {
+        const hourKey = hour.split(":")[0]; // Get the hour part (e.g., '1' from '1:00')
+        const foundData = weekData.find(
+          (dayData) => dayData.visitHour === hourKey.padStart(2, "0")
+        ); // Pad single digits
+        return foundData ? foundData.totalUniqueCount : 0; // Return count or 0 if not found
+      }),
+    },
+  ];
 
-  // Update xaxis categories to reflect only filtered hours
   const options = {
     chart: {
-      type: 'bar',
+      type: "bar",
       zoom: {
         enabled: false,
       },
       toolbar: {
-        show: false, 
+        show: false,
       },
     },
     title: {
-      text: '', 
-      align: 'left',
+      text: "Power Hours",
+      align: "left",
     },
     xaxis: {
-      categories: filteredHours, // Use filtered hours here
+      categories: filteredHours,
+      title: {
+        text: "Hours of the Day",
+        style: {
+          fontSize: "14px",
+        },
+      },
+      labels: {
+        rotate: -45,
+        style: {
+          fontSize: "12px",
+        },
+      },
     },
     yaxis: {
-      min: 0, 
+      min: 0,
       labels: {
-        offsetY: 0, 
+        offsetY: 0,
+        formatter: (value) => Math.floor(value),
+      },
+      title: {
+        text: "Unique Visits",
+        style: {
+          fontSize: "14px",
+        },
       },
       tickAmount: 5,
     },
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '70%',
-        endingShape: 'rounded',
+        columnWidth: "70%",
+        endingShape: "rounded",
+        dataLabels: {
+          enabled: false, // Ensure data labels are disabled
+        },
       },
     },
     stroke: {
       show: true,
       width: 2,
-      colors: ['#de0d61'], 
+      colors: ["#de0d61"],
     },
     fill: {
-      opacity: 0, 
+      opacity: 0, // Make the bars hollow
     },
     tooltip: {
       shared: true,
       intersect: false,
+      enabled: false, // Disable tooltip if needed
     },
     grid: {
       show: true,
-      borderColor: '#e0e0e0',
-      position: 'back',
+      borderColor: "#e0e0e0",
+      position: "back",
       xaxis: {
         lines: {
-          show: true, 
+          show: true,
         },
       },
       yaxis: {
         lines: {
-          show: true, 
+          show: true,
         },
       },
       padding: {
@@ -85,10 +113,9 @@ const BarChart = ({ weekData }) => {
       },
     },
   };
-
   return (
-    <div className='p-4 m-0 h-[260px]'>
-      <Chart options={options} series={series} type='bar' height={250} />
+    <div className="p-2 m-0 h-[280px]">
+      <Chart options={options} series={series} type="bar" height={250} />
     </div>
   );
 };
