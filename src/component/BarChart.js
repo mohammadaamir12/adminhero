@@ -42,7 +42,7 @@ const BarChart = ({ weekData }) => {
     xaxis: {
       categories: filteredHours,
       title: {
-        text: "Hours of the Day",
+        text: "Hours",
         style: {
           fontSize: "14px",
         },
@@ -61,7 +61,7 @@ const BarChart = ({ weekData }) => {
         formatter: (value) => Math.floor(value),
       },
       title: {
-        text: "Unique Visits",
+        text: "Visitors",
         style: {
           fontSize: "14px",
         },

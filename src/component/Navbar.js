@@ -7,6 +7,7 @@ import glass from "../assets/glass.png";
 import activity from "../assets/activity.png";
 import humburg from "../assets/hamburg.png";
 import humburgopen from "../assets/menuli.png";
+import imgg from "../assets/img.jpg";
 
 const DashboardHeader = ({ onToggleDrawer }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -23,12 +24,12 @@ const DashboardHeader = ({ onToggleDrawer }) => {
 
   return (
     <div className="flex h-16 w-full justify-between items-center relative z-10 bg-backgrd px-4 ">
-      <div className="flex md:ml-1 lg:ml-8 ml-0 items-center">
+      <div className="flex md:ml-1 lg:ml-7 ml-0 items-center">
         <img
-          src={isActive ? humburgopen : humburg}
+          src={imgg}
           alt="Humburg"
           onClick={handleClick}
-          className="h-6 w-6 cursor-pointer"
+          className="h-6 w-10 cursor-pointer"
         />
         <h1 className="text-black text-md md:pl-3 lg:pl-12 pl-2">DASHBOARD</h1>
       </div>

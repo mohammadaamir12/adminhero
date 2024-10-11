@@ -13,6 +13,11 @@ import child from "../assets/childs.jpg";
 import elder from "../assets/elders.jpg";
 import female from "../assets/manns.jpg";
 import male from "../assets/mans.jpg";
+import India from "../assets/flag.png";
+import China from "../assets/china.png";
+import Australia from "../assets/australia.png";
+import Usa from "../assets/united-states.png";
+import Europe from "../assets/european-union.png";
 
 function Home() {
   const [start, setStart] = useState(moment().format("YYYY-MM-DD"));
@@ -67,9 +72,10 @@ function Home() {
 
   const fetchDataOnDateChange = async () => {
     await peakHour();
+    await allGender();
     await getmaleandwomendata();
     await oldandkid();
-    await allGender();
+
     await allGenderVisitor();
   };
 
@@ -303,7 +309,7 @@ function Home() {
         },
         { adultCount: 0, kidCount: 0 }
       );
-
+      console.log(response.data);
       if (response.data.length === 0) {
         setKidandold("");
         setKidandold1("");
@@ -445,7 +451,7 @@ function Home() {
       <div className="relative flex flex-col md:flex-row w-full justify-evenly md:mt-6 gap-y-4">
         <Updatecard
           className="w-full mb-4 md:mb-0 md:w-auto"
-          txt="Daily Visits"
+          txt="Today Visits"
           data={dailyVisit}
         />
 
@@ -468,7 +474,10 @@ function Home() {
       <div className="relative bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
         {loading1 ? <ShimmerEffect /> : <LineCharts data={lineData} />}
       </div>
-      <div className="relative rounded-sm mt-6 md:mx-5 lg:mx-7 flex flex-col md:flex-row">
+      <div className="relative bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
+        {loading1 ? <ShimmerEffect /> : <BarChart weekData={peakHourData} />}
+      </div>
+      {/* <div className="relative rounded-sm mt-6 md:mx-5 lg:mx-7 flex flex-col md:flex-row">
         <div className="w-full md:w-1/3 bg-white rounded-sm shadow mb-4 md:mb-0">
           {loading1 ? <ShimmerEffect /> : <LineCharts data={lineData} />}
         </div>
@@ -478,45 +487,47 @@ function Home() {
         <div className="w-full md:w-1/3 bg-white rounded-sm shadow mb-4 md:mb-0 ">
           {loading1 ? <ShimmerEffect /> : <LineCharts data={lineData} />}
         </div>
-      </div>
+      </div> */}
       <div className="relative flex flex-col md:flex-row bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
         <div className="flex-1 p-5 gap-x-3">
-          <h1 className="text-lg">Global Sales by Top Locations</h1>
-          <p className="text-sm text-gray-400 mb-4">
+          <h1 className="text-lg font-bold mb-1">
+            Location wise visitors count
+          </h1>
+          {/* <p className="text-sm text-gray-400 mb-4">
             All Products That Were Shipped
-          </p>
+          </p> */}
           <hr className="border-t-1 border-gray-300 mb-4" />
 
           <div className="flex items-center mb-2 justify-between">
-            <img src="flag1.png" alt="Country Flag" className="w-5 h-5 mr-2" />
+            <img src={India} alt="Country Flag" className="w-5 h-5 mr-2" />
             <span>India</span>
             <span>566</span>
             <span>53.33%</span>
           </div>
           <hr className="border-t-1 border-gray-300 mb-2" />
           <div className="flex items-center mb-2 justify-between">
-            <img src="flag1.png" alt="Country Flag" className="w-5 h-5 mr-2" />
+            <img src={China} alt="Country Flag" className="w-5 h-5 mr-2" />
             <span>China</span>
             <span>100</span>
             <span>10.33%</span>
           </div>
           <hr className="border-t-1 border-gray-300 mb-2" />
           <div className="flex items-center mb-2 justify-between">
-            <img src="flag1.png" alt="Country Flag" className="w-5 h-5 mr-2" />
+            <img src={Usa} alt="Country Flag" className="w-5 h-5 mr-2" />
             <span>USA</span>
             <span>240</span>
             <span>13.99%</span>
           </div>
           <hr className="border-t-1 border-gray-300 mb-2" />
           <div className="flex items-center mb-2 justify-between">
-            <img src="flag1.png" alt="Country Flag" className="w-5 h-5 mr-2" />
+            <img src={Australia} alt="Country Flag" className="w-5 h-5 mr-2" />
             <span>Australia</span>
             <span>666</span>
             <span>83.03%</span>
           </div>
           <hr className="border-t-1 border-gray-300 mb-2" />
           <div className="flex items-center mb-2 justify-between">
-            <img src="flag1.png" alt="Country Flag" className="w-5 h-5 mr-2" />
+            <img src={Europe} alt="Country Flag" className="w-5 h-5 mr-2" />
             <span>Europe</span>
             <span>100</span>
             <span>9.0%</span>
@@ -536,7 +547,7 @@ function Home() {
             <HollowPie
               male={males}
               female={females}
-              title="Male and Female Visitors"
+              title="Male vs Female Visitors"
               showMalesAndFemales="true"
             />
           )}
@@ -548,52 +559,69 @@ function Home() {
             <HollowPie
               male={kidandold}
               female={kidandold1}
-              title="Kid and Adult Vistors"
+              title="Kid vs Adult Visitors"
             />
           )}
         </div>
       </div>
       {console.log("sfdfsd", ageGroupCounts.kids)}
-      <div className="relative flex flex-col md:flex-row justify-center items-center gap-x-24 bg-white rounded-sm mt-6 md:mx-5 lg:mx-7 p-4">
-        <div className="flex flex-col items-center">
-          <img
-            src={child}
-            alt="Image 1"
-            className="w-32 h-32 object-cover rounded-md"
-          />
-          <p className="mt-2 font-lg font-semibold text-center font-serif">
-            {ageGroupCounts.kids}
-          </p>
+      <div className="relative md:flex-row  bg-white rounded-sm mt-6 md:mx-5 lg:mx-7 p-4">
+        <div className="top-2 left-4 text-lg font-bold text-gray-800">
+          Age group wise visitors count
         </div>
-        <div className="flex flex-col items-center">
-          <img
-            src={male}
-            alt="Image 2"
-            className="w-32 h-32 object-cover rounded-md"
-          />
-          <p className="mt-2 font-lg font-semibold text-center font-serif">
-            {ageGroupCounts.teens}
-          </p>
-        </div>
-        <div className="flex flex-col items-center">
-          <img
-            src={female}
-            alt="Image 3"
-            className="w-32 h-32 object-cover rounded-md"
-          />
-          <p className="mt-2 font-semibold font-lg text-center font-serif">
-            {ageGroupCounts.men}
-          </p>
-        </div>
-        <div className="flex flex-col items-center">
-          <img
-            src={elder}
-            alt="Image 4"
-            className="w-32 h-32 object-cover rounded-md"
-          />
-          <p className="mt-2 font-semibold font-lg text-center font-serif">
-            {ageGroupCounts.elders}
-          </p>
+        <div className="flex flex-row justify-center items-center gap-x-24">
+          <div className="flex flex-col items-center">
+            <p className="mt-2 text-base text-gray-500 text-center font-serif">
+              Less than 18
+            </p>
+            <img
+              src={child}
+              alt="Image 1"
+              className="w-32 h-32 object-cover rounded-md"
+            />
+            <p className="mt-2 font-lg font-semibold text-center font-serif">
+              {ageGroupCounts.kids}
+            </p>
+          </div>
+          <div className="flex flex-col items-center">
+            <p className="mt-2 text-base text-gray-500 text-center font-serif">
+              18-25
+            </p>
+            <img
+              src={male}
+              alt="Image 2"
+              className="w-32 h-32 object-cover rounded-md"
+            />
+            <p className="mt-2 font-lg font-semibold text-center font-serif">
+              {ageGroupCounts.teens}
+            </p>
+          </div>
+          <div className="flex flex-col items-center">
+            <p className="mt-2 text-base text-gray-500 text-center font-serif">
+              26-49
+            </p>
+            <img
+              src={female}
+              alt="Image 3"
+              className="w-32 h-32 object-cover rounded-md"
+            />
+            <p className="mt-2 font-semibold font-lg text-center font-serif">
+              {ageGroupCounts.men}
+            </p>
+          </div>
+          <div className="flex flex-col items-center">
+            <p className="mt-2 text-base text-gray-500 text-center font-serif">
+              More than 50
+            </p>
+            <img
+              src={elder}
+              alt="Image 4"
+              className="w-32 h-32 object-cover rounded-md"
+            />
+            <p className="mt-2 font-semibold font-lg text-center font-serif">
+              {ageGroupCounts.elders}
+            </p>
+          </div>
         </div>
       </div>
     </div>

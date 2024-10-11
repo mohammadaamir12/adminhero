@@ -12,7 +12,7 @@ const LineCharts = ({ data }) => {
       },
     },
     title: {
-      text: "Visitors",
+      text: "Visitors Count",
       align: "left",
     },
     xaxis: {
@@ -48,10 +48,22 @@ const LineCharts = ({ data }) => {
         "29",
         "30",
       ],
+      title: {
+        text: "Days",
+        style: {
+          fontSize: "14px",
+        },
+      },
     },
     yaxis: {
       labels: {
         offsetX: -10,
+      },
+      title: {
+        text: "Visitors",
+        style: {
+          fontSize: "14px",
+        },
       },
       min: 20,
     },
