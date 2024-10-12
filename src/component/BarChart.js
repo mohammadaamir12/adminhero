@@ -74,7 +74,7 @@ const BarChart = ({ weekData }) => {
         columnWidth: "70%",
         endingShape: "rounded",
         dataLabels: {
-          enabled: false, // Ensure data labels are disabled
+          enabled: false,
         },
       },
     },
@@ -84,12 +84,12 @@ const BarChart = ({ weekData }) => {
       colors: ["#de0d61"],
     },
     fill: {
-      opacity: 0, // Make the bars hollow
+      opacity: 0,
     },
     tooltip: {
       shared: true,
       intersect: false,
-      enabled: false, // Disable tooltip if needed
+      enabled: true,
     },
     grid: {
       show: true,

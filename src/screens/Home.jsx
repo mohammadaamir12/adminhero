@@ -18,6 +18,8 @@ import China from "../assets/china.png";
 import Australia from "../assets/australia.png";
 import Usa from "../assets/united-states.png";
 import Europe from "../assets/european-union.png";
+import { ToastContainer, toast } from "react-toastify";
+import Spinner from "../component/Spinner";
 
 function Home() {
   const [start, setStart] = useState(moment().format("YYYY-MM-DD"));
@@ -40,6 +42,8 @@ function Home() {
   const [endDate, setEndDate] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loading1, setLoading1] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [loading3, setLoading3] = useState(false);
   const [submittedStartDate, setSubmittedStartDate] = useState("");
   const [submittedEndDate, setSubmittedEndDate] = useState("");
   const [ageGroupCounts, setAgeGroupCounts] = useState({
@@ -193,6 +197,7 @@ function Home() {
   };
 
   const allGenderVisitor = async () => {
+    setLoading(true);
     const params = {
       api_name: "unique_head_count",
       branch_id: 3,
@@ -213,14 +218,16 @@ function Home() {
       });
       // console.log("sdsdsdsds", newseriesData);
       setLineData(newseriesData);
+      setLoading(false);
     } catch (error) {
       console.error("Error:", error);
+      toast("Error allGenderVisitor:line Graph", error);
     }
     setLoading(false);
-    setLoading1(false);
   };
 
   const peakHour = async () => {
+    setLoading1(true);
     const params = {
       api_name: "peak_hours",
       branch_id: 3,
@@ -239,14 +246,18 @@ function Home() {
       }));
       // console.log("transform", transformedData, response.data);
       setpeakHourData(transformedData);
+      setLoading1(false);
     } catch (error) {
       console.error("Error:", error);
+      toast("Error peakHour:bar Graph", error);
+      setLoading1(false);
     }
   };
 
   const getmaleandwomendata = async () => {
     // const startdate = start.toString();
     // const endDate = end.toString();
+    setLoading2(true);
 
     const params = {
       api_name: "gender_count",
@@ -272,25 +283,27 @@ function Home() {
       );
 
       if (response.data.length === 0) {
-        // Set to null if response is empty
         setFemales("");
         setMales("");
       } else {
         setFemales(femaleCount ?? null);
         setMales(maleCount ?? null);
       }
+      // setLoading2(false);
 
       // console.log("Response data:", response.data);
     } catch (error) {
       console.error("Error:", error);
+      toast("Error getmalevsfemale:Pie Chart", error);
+      // setLoading2(false);
     }
   };
   const oldandkid = async () => {
     const params = {
       api_name: "adult_kids_count",
       branch_id: 3,
-      start_date: submittedStartDate === "" ? start : submittedStartDate,
-      end_date: submittedEndDate === "" ? start : submittedEndDate,
+      start_date: "2024-10-01",
+      end_date: "2024-10-11",
     };
 
     try {
@@ -321,9 +334,12 @@ function Home() {
       // console.log("Response data:", response.data);
     } catch (error) {
       console.error("Error:", error);
+      toast("Error oldvskid:Pie Chart", error);
+      setLoading2(false);
     }
   };
   const allGender = async () => {
+    setLoading3(true);
     console.log("enter allll");
     const params = {
       api_name: "age_group_count",
@@ -361,10 +377,12 @@ function Home() {
         }
       });
       setAgeGroupCounts(counts);
+      setLoading3(false);
     } catch (error) {
       console.error("Error:", error);
+      setLoading3(false);
+      toast("Error allGenderCount:Count Character", error);
     }
-    setLoading(false);
   };
 
   const handleStartDateChange = (date) => {
@@ -409,6 +427,7 @@ function Home() {
             selected={endDate}
             onChange={handleEndDateChange}
             placeholderText="Select End Date"
+            minDate={startDate}
           />
         </div>
         <button
@@ -472,7 +491,7 @@ function Home() {
         />
       </div>
       <div className="relative bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
-        {loading1 ? <ShimmerEffect /> : <LineCharts data={lineData} />}
+        {loading ? <ShimmerEffect /> : <LineCharts data={lineData} />}
       </div>
       <div className="relative bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
         {loading1 ? <ShimmerEffect /> : <BarChart weekData={peakHourData} />}
@@ -490,7 +509,7 @@ function Home() {
       </div> */}
       <div className="relative flex flex-col md:flex-row bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
         <div className="flex-1 p-5 gap-x-3">
-          <h1 className="text-lg font-bold mb-1">
+          <h1 className="text-lg text-gray-800 font-medium mb-1">
             Location wise visitors count
           </h1>
           {/* <p className="text-sm text-gray-400 mb-4">
@@ -540,89 +559,99 @@ function Home() {
       </div>
 
       <div className="md:flex lg:flex flex-row md:gap-x-6 lg:gap-x-6 justify-center items-center  rounded-sm mt-6 md:mx-5 lg:mx-7">
-        <div className="flex-1 flex justify-center p-4 bg-white md:mb-0 lg:mb-0 mb-4">
-          {loading1 ? (
-            <ShimmerEffect />
-          ) : (
+        {loading2 ? (
+          <div className="flex-1 flex justify-center p-4 bg-white md:mb-0 lg:mb-0 mb-4">
+            <Spinner />
+          </div>
+        ) : (
+          <div className="flex-1 flex justify-center p-4 bg-white md:mb-0 lg:mb-0 mb-4">
             <HollowPie
               male={males}
               female={females}
               title="Male vs Female Visitors"
-              showMalesAndFemales="true"
             />
-          )}
-        </div>
-        <div className="flex-1 flex justify-center p-4 bg-white">
-          {loading1 ? (
-            <ShimmerEffect />
-          ) : (
+          </div>
+        )}
+
+        {loading2 ? (
+          <div className="flex-1 flex justify-center p-4 bg-white md:mb-0 lg:mb-0 mb-4">
+            <Spinner />
+          </div>
+        ) : (
+          <div className="flex-1 flex justify-center p-4 bg-white md:mb-0 lg:mb-0 mb-4">
             <HollowPie
               male={kidandold}
               female={kidandold1}
               title="Kid vs Adult Visitors"
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
       {console.log("sfdfsd", ageGroupCounts.kids)}
       <div className="relative md:flex-row  bg-white rounded-sm mt-6 md:mx-5 lg:mx-7 p-4">
-        <div className="top-2 left-4 text-lg font-bold text-gray-800">
-          Age group wise visitors count
-        </div>
-        <div className="flex flex-row justify-center items-center gap-x-24">
-          <div className="flex flex-col items-center">
-            <p className="mt-2 text-base text-gray-500 text-center font-serif">
-              Less than 18
-            </p>
-            <img
-              src={child}
-              alt="Image 1"
-              className="w-32 h-32 object-cover rounded-md"
-            />
-            <p className="mt-2 font-lg font-semibold text-center font-serif">
-              {ageGroupCounts.kids}
-            </p>
+        {loading3 ? (
+          <ShimmerEffect />
+        ) : (
+          <div>
+            <div className="top-2 left-4 text-lg text-gray-800 font-medium">
+              Age group wise visitors count
+            </div>
+            <div className="flex flex-row justify-center items-center gap-x-24">
+              <div className="flex flex-col items-center">
+                <p className="mt-2 text-base text-gray-500 text-center font-serif">
+                  Less than 18
+                </p>
+                <img
+                  src={child}
+                  alt="Image 1"
+                  className="w-32 h-32 object-cover rounded-md"
+                />
+                <p className="mt-2 font-lg font-semibold text-center font-serif">
+                  {ageGroupCounts.kids}
+                </p>
+              </div>
+              <div className="flex flex-col items-center">
+                <p className="mt-2 text-base text-gray-500 text-center font-serif">
+                  18-25
+                </p>
+                <img
+                  src={male}
+                  alt="Image 2"
+                  className="w-32 h-32 object-cover rounded-md"
+                />
+                <p className="mt-2 font-lg font-semibold text-center font-serif">
+                  {ageGroupCounts.teens}
+                </p>
+              </div>
+              <div className="flex flex-col items-center">
+                <p className="mt-2 text-base text-gray-500 text-center font-serif">
+                  26-49
+                </p>
+                <img
+                  src={female}
+                  alt="Image 3"
+                  className="w-32 h-32 object-cover rounded-md"
+                />
+                <p className="mt-2 font-semibold font-lg text-center font-serif">
+                  {ageGroupCounts.men}
+                </p>
+              </div>
+              <div className="flex flex-col items-center">
+                <p className="mt-2 text-base text-gray-500 text-center font-serif">
+                  More than 50
+                </p>
+                <img
+                  src={elder}
+                  alt="Image 4"
+                  className="w-32 h-32 object-cover rounded-md"
+                />
+                <p className="mt-2 font-semibold font-lg text-center font-serif">
+                  {ageGroupCounts.elders}
+                </p>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col items-center">
-            <p className="mt-2 text-base text-gray-500 text-center font-serif">
-              18-25
-            </p>
-            <img
-              src={male}
-              alt="Image 2"
-              className="w-32 h-32 object-cover rounded-md"
-            />
-            <p className="mt-2 font-lg font-semibold text-center font-serif">
-              {ageGroupCounts.teens}
-            </p>
-          </div>
-          <div className="flex flex-col items-center">
-            <p className="mt-2 text-base text-gray-500 text-center font-serif">
-              26-49
-            </p>
-            <img
-              src={female}
-              alt="Image 3"
-              className="w-32 h-32 object-cover rounded-md"
-            />
-            <p className="mt-2 font-semibold font-lg text-center font-serif">
-              {ageGroupCounts.men}
-            </p>
-          </div>
-          <div className="flex flex-col items-center">
-            <p className="mt-2 text-base text-gray-500 text-center font-serif">
-              More than 50
-            </p>
-            <img
-              src={elder}
-              alt="Image 4"
-              className="w-32 h-32 object-cover rounded-md"
-            />
-            <p className="mt-2 font-semibold font-lg text-center font-serif">
-              {ageGroupCounts.elders}
-            </p>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
