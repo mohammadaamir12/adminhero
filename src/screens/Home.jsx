@@ -41,6 +41,7 @@ function Home() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingBtn, setLoadingBtn] = useState(false);
   const [loading1, setLoading1] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [loading3, setLoading3] = useState(false);
@@ -84,7 +85,7 @@ function Home() {
   };
 
   const DailyVisit = async () => {
-    setLoading1(true);
+    // setLoading1(true);
     const params = {
       api_name: "unique_head_count",
       branch_id: 3,
@@ -136,7 +137,7 @@ function Home() {
     const dayOfWeek = currentDate.getDay();
     const daysSinceMonday = (dayOfWeek + 6) % 7;
     startDate.setDate(currentDate.getDate() - daysSinceMonday);
-    startDate.setDate(startDate.getDate() + 1);
+    startDate.setDate(startDate.getDate());
     const formattedStartDate = startDate.toISOString().split("T")[0];
     console.log("weeeek", endDate, formattedStartDate);
     const params = {
@@ -155,6 +156,7 @@ function Home() {
         (accumulator, visit) => accumulator + visit.uniqueCount,
         0
       );
+      console.log("week", totalSum);
       setWeek(totalSum.toString());
     } catch (error) {
       console.error("Error:", error);
@@ -219,11 +221,13 @@ function Home() {
       // console.log("sdsdsdsds", newseriesData);
       setLineData(newseriesData);
       setLoading(false);
+      setLoadingBtn(false);
     } catch (error) {
       console.error("Error:", error);
       toast("Error allGenderVisitor:line Graph", error);
     }
     setLoading(false);
+    setLoadingBtn(false);
   };
 
   const peakHour = async () => {
@@ -244,7 +248,7 @@ function Home() {
         visitHour: item.visitHour,
         totalUniqueCount: item.totalCount,
       }));
-      // console.log("transform", transformedData, response.data);
+      console.log("transform", response.data);
       setpeakHourData(transformedData);
       setLoading1(false);
     } catch (error) {
@@ -289,13 +293,13 @@ function Home() {
         setFemales(femaleCount ?? null);
         setMales(maleCount ?? null);
       }
-      // setLoading2(false);
+      setLoading2(false);
 
       // console.log("Response data:", response.data);
     } catch (error) {
       console.error("Error:", error);
       toast("Error getmalevsfemale:Pie Chart", error);
-      // setLoading2(false);
+      setLoading2(false);
     }
   };
   const oldandkid = async () => {
@@ -330,7 +334,7 @@ function Home() {
         setKidandold(kidCount ?? null);
         setKidandold1(adultCount ?? null);
       }
-
+      setLoading2(false);
       // console.log("Response data:", response.data);
     } catch (error) {
       console.error("Error:", error);
@@ -405,7 +409,7 @@ function Home() {
 
     setSubmittedStartDate(formattedStartDate);
     setSubmittedEndDate(formattedEndDate);
-    setLoading(true);
+    setLoadingBtn(true);
   };
 
   // console.log("chumma", start, end);
@@ -433,15 +437,15 @@ function Home() {
         <button
           className={`m-2 flex items-center justify-center h-8 md:w-32 lg:w-32 w-16  p-2 rounded transition duration-300 
         ${
-          loading
+          loadingBtn
             ? "bg-gray-500 cursor-not-allowed"
             : "bg-blue-500 hover:bg-blue-600"
         }
       `}
           onClick={handleSubmit}
-          disabled={loading}
+          disabled={loadingBtn}
         >
-          {loading ? (
+          {loadingBtn ? (
             <svg
               className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
               xmlns="http://www.w3.org/2000/svg"
@@ -494,7 +498,8 @@ function Home() {
         {loading ? <ShimmerEffect /> : <LineCharts data={lineData} />}
       </div>
       <div className="relative bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
-        {loading1 ? <ShimmerEffect /> : <BarChart weekData={peakHourData} />}
+        <BarChart weekData={peakHourData} />
+        {/* <LineCharts data={lineData} /> */}
       </div>
       {/* <div className="relative rounded-sm mt-6 md:mx-5 lg:mx-7 flex flex-col md:flex-row">
         <div className="w-full md:w-1/3 bg-white rounded-sm shadow mb-4 md:mb-0">
@@ -509,7 +514,7 @@ function Home() {
       </div> */}
       <div className="relative flex flex-col md:flex-row bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
         <div className="flex-1 p-5 gap-x-3">
-          <h1 className="text-lg text-gray-800 font-medium mb-1">
+          <h1 className="text-base text-gray-800 font-bold mb-1">
             Location wise visitors count
           </h1>
           {/* <p className="text-sm text-gray-400 mb-4">
@@ -593,7 +598,7 @@ function Home() {
           <ShimmerEffect />
         ) : (
           <div>
-            <div className="top-2 left-4 text-lg text-gray-800 font-medium">
+            <div className="top-2 left-4 text-md text-gray-800 font-bold">
               Age group wise visitors count
             </div>
             <div className="flex flex-row justify-center items-center gap-x-24">

@@ -4,26 +4,27 @@ import Chart from "react-apexcharts";
 const BarChart = ({ weekData }) => {
   const hours = Array.from({ length: 24 }, (_, hour) => `${hour + 1}:00`);
 
-  // Filter hours that have data
   const filteredHours = hours.filter((hour) =>
     weekData.some(
       (dayData) => dayData.visitHour === hour.split(":")[0].padStart(2, "0")
     )
   );
 
-  // Update series data based on filtered hours
-  const series = [
-    {
-      name: "Unique Visits",
-      data: filteredHours.map((hour) => {
-        const hourKey = hour.split(":")[0]; // Get the hour part (e.g., '1' from '1:00')
-        const foundData = weekData.find(
-          (dayData) => dayData.visitHour === hourKey.padStart(2, "0")
-        ); // Pad single digits
-        return foundData ? foundData.totalUniqueCount : 0; // Return count or 0 if not found
-      }),
-    },
-  ];
+  const series = weekData.length
+    ? [
+        {
+          name: "Unique Visits",
+          data: filteredHours.map((hour) => {
+            const hourKey = hour.split(":")[0];
+            const foundData = weekData.find(
+              (dayData) => dayData.visitHour === hourKey.padStart(2, "0")
+            );
+            // Safely return totalUniqueCount or 0 if not found
+            return foundData?.totalUniqueCount ?? 0; // Using optional chaining and nullish coalescing
+          }),
+        },
+      ]
+    : [{ name: "Unique Visits", data: Array(filteredHours.length).fill(0) }];
 
   const options = {
     chart: {
@@ -113,6 +114,7 @@ const BarChart = ({ weekData }) => {
       },
     },
   };
+
   return (
     <div className="p-2 m-0 h-[280px]">
       <Chart options={options} series={series} type="bar" height={250} />
