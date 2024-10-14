@@ -334,12 +334,11 @@ function Home() {
         setKidandold(kidCount ?? null);
         setKidandold1(adultCount ?? null);
       }
-      setLoading2(false);
+
       // console.log("Response data:", response.data);
     } catch (error) {
       console.error("Error:", error);
       toast("Error oldvskid:Pie Chart", error);
-      setLoading2(false);
     }
   };
   const allGender = async () => {
