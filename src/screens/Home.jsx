@@ -573,6 +573,7 @@ function Home() {
               male={males}
               female={females}
               title="Male vs Female Visitors"
+              showMalesAndFemales={true}
             />
           </div>
         )}
