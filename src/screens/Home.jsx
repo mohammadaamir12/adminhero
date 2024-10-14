@@ -306,8 +306,8 @@ function Home() {
     const params = {
       api_name: "adult_kids_count",
       branch_id: 3,
-      start_date: "2024-10-01",
-      end_date: "2024-10-11",
+      start_date: submittedStartDate === "" ? start : submittedStartDate,
+      end_date: submittedEndDate === "" ? start : submittedEndDate,
     };
 
     try {
@@ -326,7 +326,7 @@ function Home() {
         },
         { adultCount: 0, kidCount: 0 }
       );
-      console.log(response.data);
+      console.log("old and kid", response.data);
       if (response.data.length === 0) {
         setKidandold("");
         setKidandold1("");
@@ -592,15 +592,15 @@ function Home() {
         )}
       </div>
       {console.log("sfdfsd", ageGroupCounts.kids)}
-      <div className="relative md:flex-row  bg-white rounded-sm mt-6 md:mx-5 lg:mx-7 p-4">
+      <div className="relative bg-white rounded-sm mt-6 md:mx-5 lg:mx-7 p-4">
         {loading3 ? (
           <ShimmerEffect />
         ) : (
           <div>
-            <div className="top-2 left-4 text-md text-gray-800 font-bold">
+            <div className="text-md text-gray-800 font-bold mb-4 text-center">
               Age group wise visitors count
             </div>
-            <div className="flex flex-row justify-center items-center gap-x-24">
+            <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-x-24">
               <div className="flex flex-col items-center">
                 <p className="mt-2 text-base text-gray-500 text-center font-serif">
                   Less than 18
@@ -608,7 +608,7 @@ function Home() {
                 <img
                   src={child}
                   alt="Image 1"
-                  className="w-32 h-32 object-cover rounded-md"
+                  className="w-28 h-28 object-cover rounded-md"
                 />
                 <p className="mt-2 font-lg font-semibold text-center font-serif">
                   {ageGroupCounts.kids}
@@ -621,7 +621,7 @@ function Home() {
                 <img
                   src={male}
                   alt="Image 2"
-                  className="w-32 h-32 object-cover rounded-md"
+                  className="w-28 h-28 object-cover rounded-md"
                 />
                 <p className="mt-2 font-lg font-semibold text-center font-serif">
                   {ageGroupCounts.teens}
@@ -634,7 +634,7 @@ function Home() {
                 <img
                   src={female}
                   alt="Image 3"
-                  className="w-32 h-32 object-cover rounded-md"
+                  className="w-28 h-28 object-cover rounded-md"
                 />
                 <p className="mt-2 font-semibold font-lg text-center font-serif">
                   {ageGroupCounts.men}
@@ -647,7 +647,7 @@ function Home() {
                 <img
                   src={elder}
                   alt="Image 4"
-                  className="w-32 h-32 object-cover rounded-md"
+                  className="w-28 h-28 object-cover rounded-md"
                 />
                 <p className="mt-2 font-semibold font-lg text-center font-serif">
                   {ageGroupCounts.elders}
