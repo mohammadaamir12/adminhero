@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import img from "../assets/img.png";
 
 const Login = ({ setAuth }) => {
   const [number, setNumber] = useState("");
@@ -115,7 +116,15 @@ const Login = ({ setAuth }) => {
         onSubmit={showOtp ? handleOtpSubmit : handleNumberSubmit}
         className="bg-white p-8 rounded-lg shadow-lg w-96"
       >
-        <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
+        <div className="flex justify-center">
+          <img
+            src={img} // Replace with your image URL
+            alt="Your Alt Text"
+            className="w-32 h-auto" // Adjust width as needed
+          />
+        </div>
+
+        {/* <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2> */}
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <input
           type="text"
