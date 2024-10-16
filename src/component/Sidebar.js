@@ -7,8 +7,15 @@ import hart from "../assets/hart.png";
 import stats from "../assets/stats.png";
 
 import { TiArrowSortedUp } from "react-icons/ti";
+import { useNavigate } from "react-router-dom";
 
-function Sidebar({ isOpen }) {
+function Sidebar({ isOpen, setAuth }) {
+  const navigate = useNavigate();
+  const setLogout = () => {
+    localStorage.removeItem("responseData");
+    setAuth(false);
+    navigate("/login");
+  };
   console.log(isOpen);
 
   return (
@@ -71,7 +78,7 @@ function Sidebar({ isOpen }) {
                 Rocket
               </span>
             </div>
-            <div className="flex items-center my-1 mb-6">
+            <div className="flex items-center my-1 mb-6" onClick={setLogout}>
               <img
                 src={dough}
                 alt="Doughnut"

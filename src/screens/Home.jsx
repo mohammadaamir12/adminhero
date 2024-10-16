@@ -113,7 +113,7 @@ function Home() {
       api_name: "unique_head_count",
       branch_id: 3,
       start_date: yester,
-      end_date: start,
+      end_date: yester,
     };
 
     try {
@@ -319,7 +319,7 @@ function Home() {
         (acc, item) => {
           if (item.age_group === "Adults") {
             acc.adultCount += item.count;
-          } else if (item.age_group === "Kids") {
+          } else if (item.age_group === "Kids" || item.age_group === "Teens") {
             acc.kidCount += item.count;
           }
           return acc;
@@ -598,7 +598,7 @@ function Home() {
           <ShimmerEffect />
         ) : (
           <div>
-            <div className="text-md text-gray-800 font-bold mb-4 text-center">
+            <div className="text-md text-gray-800 font-bold mb-4 ">
               Age group wise visitors count
             </div>
             <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-x-24">

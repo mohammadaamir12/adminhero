@@ -7,12 +7,20 @@ import glass from "../assets/glass.png";
 import activity from "../assets/activity.png";
 import humburg from "../assets/hamburg.png";
 import humburgopen from "../assets/menuli.png";
-import imgg from "../assets/img.jpg";
+import imgg from "../assets/img.png";
+import { useNavigate } from "react-router-dom";
 
-const DashboardHeader = ({ onToggleDrawer }) => {
+const DashboardHeader = ({ onToggleDrawer, setAuth }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isActive, setIsActive] = useState(false);
+
+  const navigate = useNavigate();
+  const setLogout = () => {
+    localStorage.removeItem("responseData");
+    setAuth(false);
+    navigate("/login");
+  };
 
   const handleClick = () => {
     setIsActive(!isActive);
@@ -29,7 +37,7 @@ const DashboardHeader = ({ onToggleDrawer }) => {
           src={imgg}
           alt="Humburg"
           onClick={handleClick}
-          className="h-6 w-10 cursor-pointer"
+          className="h-14 w-12 cursor-pointer"
         />
         <h1 className="text-black text-md md:pl-3 lg:pl-12 pl-2">DASHBOARD</h1>
       </div>
@@ -60,7 +68,12 @@ const DashboardHeader = ({ onToggleDrawer }) => {
             <div className="absolute right-5 mt-36 bg-white shadow-lg rounded p-2 w-28">
               <TiArrowSortedUp className="absolute -top-2 right-3 text-white" />
               <div className="py-1 cursor-pointer text-gray-400">Profile</div>
-              <div className="py-1 cursor-pointer text-gray-400">Logout</div>
+              <div
+                className="py-1 cursor-pointer text-gray-400"
+                onClick={setLogout}
+              >
+                Logout
+              </div>
             </div>
           )}
         </div>
