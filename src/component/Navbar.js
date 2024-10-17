@@ -1,21 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { TfiSearch, TfiSignal, TfiClose } from "react-icons/tfi";
 import { MdArrowDropDown } from "react-icons/md";
 import profile from "../assets/life-profile.png";
 import { TiArrowSortedUp } from "react-icons/ti";
-import glass from "../assets/glass.png";
-import activity from "../assets/activity.png";
-import humburg from "../assets/hamburg.png";
-import humburgopen from "../assets/menuli.png";
 import imgg from "../assets/img.png";
 import { useNavigate } from "react-router-dom";
+import profileCon from "../assets/user.png";
 
 const DashboardHeader = ({ onToggleDrawer, setAuth }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isActive, setIsActive] = useState(false);
-
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [userData, setUserData] = useState("");
   const navigate = useNavigate();
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isProfileModalOpen &&
+        modalRef.current &&
+        !modalRef.current.contains(event.target)
+      ) {
+        setIsProfileModalOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isProfileModalOpen]);
+
+  const getData = () => {
+    const retrievedData = localStorage.getItem("data");
+    const parsedData = JSON.parse(retrievedData);
+    setUserData(parsedData);
+    console.log("usersdata", parsedData);
+  };
+
   const setLogout = () => {
     localStorage.removeItem("responseData");
     setAuth(false);
@@ -29,30 +57,23 @@ const DashboardHeader = ({ onToggleDrawer, setAuth }) => {
 
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+  const toggleProfileModal = () => {
+    setIsDropdownOpen(false);
+    setIsProfileModalOpen(!isProfileModalOpen);
+  };
 
   return (
-    <div className="flex h-16 w-full justify-between items-center relative z-10 bg-backgrd px-4 ">
+    <div className="flex h-16 w-full justify-between items-center relative z-10 bg-backgrd px-4">
       <div className="flex md:ml-1 lg:ml-7 ml-0 items-center">
         <img
           src={imgg}
-          alt="Humburg"
+          alt="Hamburg"
           onClick={handleClick}
           className="h-14 w-12 cursor-pointer"
         />
         <h1 className="text-black text-md md:pl-3 lg:pl-12 pl-2">DASHBOARD</h1>
       </div>
       <div className="flex items-center gap-x-6">
-        {/* <img 
-  src={glass}
-  alt="Search" 
-  className='h-6 w-6 cursor-pointer' 
-  onClick={toggleSearch} 
-/>
-<img 
-  src={activity} 
-  alt="Notification" 
-  className='h-5 w-5 cursor-pointer'  
-/> */}
         <div className="flex items-center relative">
           <img
             src={profile}
@@ -67,7 +88,12 @@ const DashboardHeader = ({ onToggleDrawer, setAuth }) => {
           {isDropdownOpen && (
             <div className="absolute right-5 mt-36 bg-white shadow-lg rounded p-2 w-28">
               <TiArrowSortedUp className="absolute -top-2 right-3 text-white" />
-              <div className="py-1 cursor-pointer text-gray-400">Profile</div>
+              <div
+                className="py-1 cursor-pointer text-gray-400"
+                onClick={toggleProfileModal}
+              >
+                Profile
+              </div>
               <div
                 className="py-1 cursor-pointer text-gray-400"
                 onClick={setLogout}
@@ -78,6 +104,46 @@ const DashboardHeader = ({ onToggleDrawer, setAuth }) => {
           )}
         </div>
       </div>
+
+      {/* Profile Modal */}
+      {isProfileModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div
+            ref={modalRef}
+            className="bg-white rounded-lg p-6 shadow-lg relative w-80 h-64"
+          >
+            <TfiClose
+              className="absolute top-2 right-2 h-5 w-5 cursor-pointer text-gray-400"
+              onClick={toggleProfileModal}
+            />
+            <div className="flex justify-center mb-4">
+              <img
+                src={profileCon}
+                className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 text-gray-600"
+              />
+            </div>
+            <h2 className="text-base font-semibold font-serif text-center">
+              Staff Id : {userData.details.staffid}
+            </h2>
+            <h2 className="text-base font-semibold font-serif text-center">
+              Branch Id : {userData.details.branchid}
+            </h2>
+            <h2 className="text-base font-semibold font-serif text-center">
+              Staff Name : {userData.details.staffname}
+            </h2>
+            <h2 className="text-base font-semibold font-serif text-center">
+              Phone Number : {userData.details.phone}
+            </h2>
+            <h2 className="text-base font-semibold font-serif text-center">
+              Branch Name : {userData.details.branchname}
+            </h2>
+            <h2 className="text-base font-semibold font-serif text-center">
+              Country : {userData.details.country}
+            </h2>
+          </div>
+        </div>
+      )}
+
       {isSearchOpen && (
         <div className="absolute top-16 left-1/2 transform -translate-x-1/2 bg-white shadow-lg p-4 rounded">
           <div className="flex items-center">

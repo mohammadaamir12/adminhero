@@ -216,6 +216,7 @@ function Home() {
 
       response.data.forEach((data) => {
         const day = new Date(data.visitDate).getUTCDate();
+        console.log("day", day);
         newseriesData[day - 1] += data.uniqueCount;
       });
       // console.log("sdsdsdsds", newseriesData);

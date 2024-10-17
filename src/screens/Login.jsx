@@ -89,6 +89,7 @@ const Login = ({ setAuth }) => {
         }
 
         const data = await response.json();
+        localStorage.setItem("data", JSON.stringify(data));
         console.log("OTP verified successfully:", data);
         navigate("/");
         setError("");
