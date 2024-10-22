@@ -76,7 +76,9 @@ const DashboardHeader = ({ onToggleDrawer, setAuth ,theme,setTheme}) => {
         <h1 className="text-black dark:text-white text-md md:pl-3 lg:pl-12 pl-2">DASHBOARD</h1>
       </div>
       <div className="flex items-center gap-x-6">
+      <h1></h1>
         <div className="flex items-center relative">
+        <h1 className="font-semibold text-sm mr-1 text-black">{userData?userData.details.staffname:''}</h1>
           <img
             src={profile}
             className="w-12 h-12 cursor-pointer"
