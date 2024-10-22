@@ -252,7 +252,7 @@ function Home({theme,setTheme}) {
       );
       const transformedData = response.data.map((item) => ({
         visitHour: item.visitHour,
-        totalUniqueCount: item.totalCount,
+        totalUniqueCount: item.uniqueCount,
       }));
       console.log("transform", response.data);
       setpeakHourData(transformedData);
