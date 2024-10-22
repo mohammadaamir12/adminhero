@@ -3,6 +3,7 @@ import Chart from "react-apexcharts";
 
 const LineCharts = ({ data }) => {
   const color = "#00ff7b";
+  
 
   const options = {
     chart: {
@@ -14,6 +15,7 @@ const LineCharts = ({ data }) => {
     title: {
       text: "Visitors Count",
       align: "left",
+     
     },
     xaxis: {
       categories: [

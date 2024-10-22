@@ -20,8 +20,9 @@ import Usa from "../assets/united-states.png";
 import Europe from "../assets/european-union.png";
 import { ToastContainer, toast } from "react-toastify";
 import Spinner from "../component/Spinner";
+import { FaCog } from 'react-icons/fa';
 
-function Home() {
+function Home({theme,setTheme}) {
   const [start, setStart] = useState(moment().format("YYYY-MM-DD"));
   const [end, setEnd] = useState(moment().format("YYYY-MM-DD"));
   const [dailyVisit, setDailyVisit] = useState([]);
@@ -45,6 +46,8 @@ function Home() {
   const [loading1, setLoading1] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [loading3, setLoading3] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isToggled, setIsToggled] = useState(false);
   const [submittedStartDate, setSubmittedStartDate] = useState("");
   const [submittedEndDate, setSubmittedEndDate] = useState("");
   const [ageGroupCounts, setAgeGroupCounts] = useState({
@@ -232,6 +235,8 @@ function Home() {
   };
 
   const peakHour = async () => {
+    console.log('fhhhjkkkjjj',start);
+    
     setLoading1(true);
     const params = {
       api_name: "peak_hours",
@@ -413,13 +418,53 @@ function Home() {
   };
 
   // console.log("chumma", start, end);
-
+  const toggleContainer = () => {
+    setIsOpen(!isOpen);
+  };
+  const handleToggle = () => {
+    setTheme(theme === 'dark' ? 'light' :'dark')
+    setIsToggled(prevState => !prevState);
+  };
   return (
-    <div className="p-4 md:w-full lg:pl-36 bg-backgrd">
-      <div className="md:mx-5 lg:mx-7 mb-2 md:mb-0 lg:mb-0 relative h-12 justify-evenly bg-white rounded-sm flex items-center">
+    <div className="p-4 md:w-full lg:pl-36 bg-backgrd dark:bg-dark1">
+      {/* Fixed Button */}
+      <div className="fixed right-0 top-36 z-10">
+        <button
+          className="bg-gray-500 bg-opacity-50 text-white p-2 rounded-l-lg shadow-lg hover:bg-gray-600 transition duration-300 flex items-center"
+          onClick={toggleContainer}
+        >
+          <FaCog className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* Toggle Container */}
+      {isOpen && (
+  <div className="fixed right-16 top-36 bg-dark3 shadow-lg p-4 rounded-lg z-20 flex flex-col items-center">
+    <h2 className="text-md font-medium text-base text-white">Settings</h2>
+    <p className="text-sm font-extralight text-white mb-2">Here you can adjust your settings.</p>
+    <div className="flex items-center">
+      <h1 className="mr-2 text-xs text-darktxt font-medium">LIGHT</h1>
+      <div
+        onClick={handleToggle}
+        className={`relative inline-flex items-center cursor-pointer w-12 h-6 rounded-full transition-colors duration-300 ${
+          isToggled ? 'bg-blue-500' : 'bg-gray-600'
+        }`}
+      >
+        <span
+          className={`absolute w-4 h-4 bg-gray-400 rounded-full shadow transform transition-transform duration-300 ${
+            isToggled ? 'translate-x-6' : 'translate-x-0'
+          }`}
+        />
+      </div>
+      <h1 className="ml-2 text-xs text-darktxt font-medium">DARK</h1>
+    </div>
+  </div>
+)}
+
+      <div className="md:mx-5 lg:mx-7 mb-2 md:mb-0 lg:mb-0 relative h-12 justify-evenly bg-white dark:bg-dark2 rounded-sm flex items-center">
         <div className="flex-1 mx-2">
           <DatePicker
-            className="w-full"
+            className="w-full dark:bg-darktxt"
             selected={startDate}
             onChange={handleStartDateChange}
             placeholderText="Select Start Date"
@@ -427,7 +472,7 @@ function Home() {
         </div>
         <div className="flex-1 mx-2">
           <DatePicker
-            className="w-full"
+            className="w-full dark:bg-darktxt"
             selected={endDate}
             onChange={handleEndDateChange}
             placeholderText="Select End Date"
@@ -435,7 +480,7 @@ function Home() {
           />
         </div>
         <button
-          className={`m-2 flex items-center justify-center h-8 md:w-32 lg:w-32 w-16  p-2 rounded transition duration-300 
+          className={`m-2 dark:text-white flex items-center justify-center h-8 md:w-32 lg:w-32 w-16  p-2 rounded transition duration-300 
         ${
           loadingBtn
             ? "bg-gray-500 cursor-not-allowed"
@@ -494,10 +539,10 @@ function Home() {
           data={month}
         />
       </div>
-      <div className="relative bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
+      <div className="relative bg-white dark:bg-dark2 rounded-sm mt-6 md:mx-5 lg:mx-7">
         {loading ? <ShimmerEffect /> : <LineCharts data={lineData} />}
       </div>
-      <div className="relative bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
+      <div className="relative dark:bg-dark2 bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
         <BarChart weekData={peakHourData} />
         {/* <LineCharts data={lineData} /> */}
       </div>
@@ -512,9 +557,9 @@ function Home() {
           {loading1 ? <ShimmerEffect /> : <LineCharts data={lineData} />}
         </div>
       </div> */}
-      <div className="relative flex flex-col md:flex-row bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
+      <div className="relative dark:bg-dark2 flex flex-col md:flex-row bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
         <div className="flex-1 p-5 gap-x-3">
-          <h1 className="text-base text-gray-800 font-bold mb-1">
+          <h1 className="text-sm dark:text-white text-gray-800 font-bold mb-1">
             Location wise visitors count
           </h1>
           {/* <p className="text-sm text-gray-400 mb-4">
@@ -524,37 +569,37 @@ function Home() {
 
           <div className="flex items-center mb-2 justify-between">
             <img src={India} alt="Country Flag" className="w-5 h-5 mr-2" />
-            <span>India</span>
-            <span>566</span>
-            <span>53.33%</span>
+            <span className="dark:text-darktxt">India</span>
+            <span className="dark:text-darktxt">566</span>
+            <span className="dark:text-darktxt" > 53.33%</span>
           </div>
           <hr className="border-t-1 border-gray-300 mb-2" />
           <div className="flex items-center mb-2 justify-between">
             <img src={China} alt="Country Flag" className="w-5 h-5 mr-2" />
-            <span>China</span>
-            <span>100</span>
-            <span>10.33%</span>
+            <span className="dark:text-darktxt">China</span>
+            <span className="dark:text-darktxt">100</span>
+            <span className="dark:text-darktxt">10.33%</span>
           </div>
           <hr className="border-t-1 border-gray-300 mb-2" />
           <div className="flex items-center mb-2 justify-between">
             <img src={Usa} alt="Country Flag" className="w-5 h-5 mr-2" />
-            <span>USA</span>
-            <span>240</span>
-            <span>13.99%</span>
+            <span className="dark:text-darktxt">USA</span>
+            <span className="dark:text-darktxt">240</span>
+            <span className="dark:text-darktxt">13.99%</span>
           </div>
           <hr className="border-t-1 border-gray-300 mb-2" />
           <div className="flex items-center mb-2 justify-between">
             <img src={Australia} alt="Country Flag" className="w-5 h-5 mr-2" />
-            <span>Australia</span>
-            <span>666</span>
-            <span>83.03%</span>
+            <span className="dark:text-darktxt">Australia</span>
+            <span className="dark:text-darktxt">666</span>
+            <span className="dark:text-darktxt">83.03%</span>
           </div>
           <hr className="border-t-1 border-gray-300 mb-2" />
           <div className="flex items-center mb-2 justify-between">
             <img src={Europe} alt="Country Flag" className="w-5 h-5 mr-2" />
-            <span>Europe</span>
-            <span>100</span>
-            <span>9.0%</span>
+            <span className="dark:text-darktxt">Europe</span>
+            <span className="dark:text-darktxt">100</span>
+            <span className="dark:text-darktxt">9.0%</span>
           </div>
         </div>
 
@@ -565,11 +610,11 @@ function Home() {
 
       <div className="md:flex lg:flex flex-row md:gap-x-6 lg:gap-x-6 justify-center items-center  rounded-sm mt-6 md:mx-5 lg:mx-7">
         {loading2 ? (
-          <div className="flex-1 flex justify-center p-4 bg-white md:mb-0 lg:mb-0 mb-4">
+          <div className="flex-1 flex justify-center p-4 dark:bg-dark2 bg-white md:mb-0 lg:mb-0 mb-4">
             <Spinner />
           </div>
         ) : (
-          <div className="flex-1 flex justify-center p-4 bg-white md:mb-0 lg:mb-0 mb-4">
+          <div className="flex-1 flex justify-center p-4 dark:bg-dark2 bg-white md:mb-0 lg:mb-0 mb-4">
             <HollowPie
               male={males}
               female={females}
@@ -580,11 +625,11 @@ function Home() {
         )}
 
         {loading2 ? (
-          <div className="flex-1 flex justify-center p-4 bg-white md:mb-0 lg:mb-0 mb-4">
+          <div className="flex-1 flex justify-center p-4 dark:bg-dark2 bg-white md:mb-0 lg:mb-0 mb-4">
             <Spinner />
           </div>
         ) : (
-          <div className="flex-1 flex justify-center p-4 bg-white md:mb-0 lg:mb-0 mb-4">
+          <div className="flex-1 flex justify-center p-4 dark:bg-dark2 bg-white md:mb-0 lg:mb-0 mb-4">
             <HollowPie
               male={kidandold}
               female={kidandold1}
@@ -594,12 +639,12 @@ function Home() {
         )}
       </div>
       {console.log("sfdfsd", ageGroupCounts.kids)}
-      <div className="relative bg-white rounded-sm mt-6 md:mx-5 lg:mx-7 p-4">
+      <div className="relative bg-white dark:bg-dark2 rounded-sm mt-6 md:mx-5 lg:mx-7 p-4">
         {loading3 ? (
           <ShimmerEffect />
         ) : (
           <div>
-            <div className="text-md text-gray-800 font-bold mb-4 ">
+            <div className="text-sm text-gray-800 font-bold mb-4 ">
               Age group wise visitors count
             </div>
             <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-x-24">
@@ -612,7 +657,7 @@ function Home() {
                   alt="Image 1"
                   className="w-28 h-28 object-cover rounded-md"
                 />
-                <p className="mt-2 font-lg font-semibold text-center font-serif">
+                <p className="mt-2 font-lg font-semibold text-center font-serif dark:text-darktxt">
                   {ageGroupCounts.kids}
                 </p>
               </div>
@@ -625,7 +670,7 @@ function Home() {
                   alt="Image 2"
                   className="w-28 h-28 object-cover rounded-md"
                 />
-                <p className="mt-2 font-lg font-semibold text-center font-serif">
+                <p className="mt-2 font-lg font-semibold text-center font-serif dark:text-darktxt">
                   {ageGroupCounts.teens}
                 </p>
               </div>
@@ -638,20 +683,20 @@ function Home() {
                   alt="Image 3"
                   className="w-28 h-28 object-cover rounded-md"
                 />
-                <p className="mt-2 font-semibold font-lg text-center font-serif">
+                <p className="mt-2 font-semibold font-lg text-center font-serif dark:text-darktxt">
                   {ageGroupCounts.men}
                 </p>
               </div>
               <div className="flex flex-col items-center">
-                <p className="mt-2 text-base text-gray-500 text-center font-serif">
+                <p className="mt-2 text-base text-gray-500 text-center font-serif dark:text-darktxt">
                   More than 50
                 </p>
                 <img
                   src={elder}
                   alt="Image 4"
-                  className="w-28 h-28 object-cover rounded-md"
+                  className="w-28 h-28 object-cover rounded-md "
                 />
-                <p className="mt-2 font-semibold font-lg text-center font-serif">
+                <p className="mt-2 font-semibold font-lg text-center font-serif dark:text-darktxt">
                   {ageGroupCounts.elders}
                 </p>
               </div>

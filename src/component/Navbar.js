@@ -7,7 +7,7 @@ import imgg from "../assets/img.png";
 import { useNavigate } from "react-router-dom";
 import profileCon from "../assets/user.png";
 
-const DashboardHeader = ({ onToggleDrawer, setAuth }) => {
+const DashboardHeader = ({ onToggleDrawer, setAuth ,theme,setTheme}) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isActive, setIsActive] = useState(false);
@@ -19,6 +19,8 @@ const DashboardHeader = ({ onToggleDrawer, setAuth }) => {
   useEffect(() => {
     getData();
   }, []);
+
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -63,15 +65,15 @@ const DashboardHeader = ({ onToggleDrawer, setAuth }) => {
   };
 
   return (
-    <div className="flex h-16 w-full justify-between items-center relative z-10 bg-backgrd px-4">
+    <div className="flex h-16 w-full justify-between items-center relative z-10 bg-backgrd dark:bg-dark1 px-4">
       <div className="flex md:ml-1 lg:ml-7 ml-0 items-center">
         <img
           src={imgg}
           alt="Hamburg"
           onClick={handleClick}
-          className="h-14 w-12 cursor-pointer"
+          className="h-14 w-12 cursor-pointer dark:bg-white rounded-lg"
         />
-        <h1 className="text-black text-md md:pl-3 lg:pl-12 pl-2">DASHBOARD</h1>
+        <h1 className="text-black dark:text-white text-md md:pl-3 lg:pl-12 pl-2">DASHBOARD</h1>
       </div>
       <div className="flex items-center gap-x-6">
         <div className="flex items-center relative">
@@ -82,11 +84,11 @@ const DashboardHeader = ({ onToggleDrawer, setAuth }) => {
             onClick={toggleDropdown}
           />
           <MdArrowDropDown
-            className="h-4 w-4 cursor-pointer"
+            className="h-4 w-4 cursor-pointer dark:text-white"
             onClick={toggleDropdown}
           />
           {isDropdownOpen && (
-            <div className="absolute right-5 mt-36 bg-white shadow-lg rounded p-2 w-28">
+            <div className="absolute right-5 mt-36 bg-white dark:bg-dark3 shadow-lg rounded p-2 w-28">
               <TiArrowSortedUp className="absolute -top-2 right-3 text-white" />
               <div
                 className="py-1 cursor-pointer text-gray-400"
@@ -110,7 +112,7 @@ const DashboardHeader = ({ onToggleDrawer, setAuth }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div
             ref={modalRef}
-            className="bg-white rounded-lg p-6 shadow-lg relative w-80 h-64"
+            className="bg-white dark:bg-dark3 rounded-lg p-6 shadow-lg relative w-80 h-64"
           >
             <TfiClose
               className="absolute top-2 right-2 h-5 w-5 cursor-pointer text-gray-400"
@@ -122,22 +124,22 @@ const DashboardHeader = ({ onToggleDrawer, setAuth }) => {
                 className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 text-gray-600"
               />
             </div>
-            <h2 className="text-base font-semibold font-serif text-center">
+            <h2 className="text-base dark:text-white font-semibold font-serif text-center">
               Staff Id : {userData.details.staffid}
             </h2>
-            <h2 className="text-base font-semibold font-serif text-center">
+            <h2 className="text-base dark:text-white font-semibold font-serif text-center">
               Branch Id : {userData.details.branchid}
             </h2>
-            <h2 className="text-base font-semibold font-serif text-center">
+            <h2 className="text-base dark:text-white font-semibold font-serif text-center">
               Staff Name : {userData.details.staffname}
             </h2>
-            <h2 className="text-base font-semibold font-serif text-center">
+            <h2 className="text-base dark:text-white font-semibold font-serif text-center">
               Phone Number : {userData.details.phone}
             </h2>
-            <h2 className="text-base font-semibold font-serif text-center">
+            <h2 className="text-base dark:text-white font-semibold font-serif text-center">
               Branch Name : {userData.details.branchname}
             </h2>
-            <h2 className="text-base font-semibold font-serif text-center">
+            <h2 className="text-base dark:text-white font-semibold font-serif text-center">
               Country : {userData.details.country}
             </h2>
           </div>

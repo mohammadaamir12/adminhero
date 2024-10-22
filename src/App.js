@@ -10,6 +10,15 @@ import Login from "./screens/Login";
 function App() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [theme,setTheme]=useState('light')
+
+  useEffect(()=>{
+  if(theme === 'dark'){
+    document.documentElement.classList.add('dark')
+  }else{
+    document.documentElement.classList.remove('dark')
+  }
+  },[theme])
 
   const toggleDrawer = () => {
     setIsDrawerOpen((prevState) => !prevState);
@@ -24,6 +33,7 @@ function App() {
             <Navbar
               onToggleDrawer={toggleDrawer}
               setAuth={setIsAuthenticated}
+              theme={theme} setTheme={setTheme}
             />
             <div>
               <Routes>
@@ -31,7 +41,7 @@ function App() {
                 <Route
                   path="/"
                   element={
-                    isAuthenticated ? <Home /> : <Navigate to="/login" />
+                    isAuthenticated ? <Home theme={theme} setTheme={setTheme} /> : <Navigate to="/login" />
                   }
                 />
               </Routes>

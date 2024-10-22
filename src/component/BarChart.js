@@ -2,7 +2,7 @@ import React from "react";
 import Chart from "react-apexcharts";
 
 const BarChart = ({ weekData }) => {
-  const hours = Array.from({ length: 24 }, (_, hour) => `${hour + 1}:00`);
+  const hours = Array.from({ length: 24 }, (_, hour) => `${hour }:00`);
 
   const filteredHours = hours.filter((hour) =>
     weekData.some(
@@ -19,8 +19,7 @@ const BarChart = ({ weekData }) => {
             const foundData = weekData.find(
               (dayData) => dayData.visitHour === hourKey.padStart(2, "0")
             );
-            // Safely return totalUniqueCount or 0 if not found
-            return foundData?.totalUniqueCount ?? 0; // Using optional chaining and nullish coalescing
+            return foundData?.totalUniqueCount ?? 0;
           }),
         },
       ]
@@ -75,7 +74,10 @@ const BarChart = ({ weekData }) => {
         columnWidth: "70%",
         endingShape: "rounded",
         dataLabels: {
-          enabled: false,
+          enabled: true, // Enable data labels
+          style: {
+            opacity: 0, // Set opacity to 0 to hide labels
+          },
         },
       },
     },
@@ -85,7 +87,8 @@ const BarChart = ({ weekData }) => {
       colors: ["#de0d61"],
     },
     fill: {
-      opacity: 0,
+      opacity: 1, // Change opacity to 1 for solid bars
+      colors: ["#de0d61"], // Set the bar color
     },
     tooltip: {
       shared: true,
