@@ -2,28 +2,22 @@ import React from "react";
 import Chart from "react-apexcharts";
 
 const BarChart = ({ weekData }) => {
-  const hours = Array.from({ length: 24 }, (_, hour) => `${hour }:00`);
+  const hours = Array.from({ length: 24 }, (_, hour) => `${hour.toString().padStart(2, "0")}:00`);
 
-  const filteredHours = hours.filter((hour) =>
-    weekData.some(
-      (dayData) => dayData.visitHour === hour.split(":")[0].padStart(2, "0")
-    )
-  );
+  // Create a mapping of hours to unique visit counts
+  const visitCounts = {};
+  weekData.forEach((dayData) => {
+    const hourKey = dayData.visitHour.padStart(2, "0");
+    visitCounts[hourKey] = (visitCounts[hourKey] || 0) + Math.floor(dayData.totalUniqueCount);
+  });
 
-  const series = weekData.length
-    ? [
-        {
-          name: "Unique Visits",
-          data: filteredHours.map((hour) => {
-            const hourKey = hour.split(":")[0];
-            const foundData = weekData.find(
-              (dayData) => dayData.visitHour === hourKey.padStart(2, "0")
-            );
-            return foundData?.totalUniqueCount ?? 0;
-          }),
-        },
-      ]
-    : [{ name: "Unique Visits", data: Array(filteredHours.length).fill(0) }];
+  const series = [
+    {
+      name: "Unique Visits",
+      data: hours.map((hour) => visitCounts[hour.split(":")[0]] || 0),
+    },
+  ];
+  const check = localStorage.getItem('theme')
 
   const options = {
     chart: {
@@ -38,32 +32,32 @@ const BarChart = ({ weekData }) => {
     title: {
       text: "Power Hours",
       align: "left",
+      style:{
+         color:check==='dark'?'#000':'#fff'
+      }
     },
     xaxis: {
-      categories: filteredHours,
+      categories: hours,
       title: {
         text: "Hours",
-        style: {
-          fontSize: "14px",
-        },
+        style:{
+           color:check==='dark'?'#000':'#fff'
+        }
       },
       labels: {
         rotate: -45,
-        style: {
-          fontSize: "12px",
-        },
       },
     },
     yaxis: {
       min: 0,
       labels: {
-        offsetY: 0,
         formatter: (value) => Math.floor(value),
       },
       title: {
         text: "Visitors",
         style: {
           fontSize: "14px",
+           color:check==='dark'?'#000':'#fff'
         },
       },
       tickAmount: 5,
@@ -73,12 +67,6 @@ const BarChart = ({ weekData }) => {
         horizontal: false,
         columnWidth: "70%",
         endingShape: "rounded",
-        dataLabels: {
-          enabled: true, // Enable data labels
-          style: {
-            opacity: 0, // Set opacity to 0 to hide labels
-          },
-        },
       },
     },
     stroke: {
@@ -87,13 +75,12 @@ const BarChart = ({ weekData }) => {
       colors: ["#de0d61"],
     },
     fill: {
-      opacity: 1, // Change opacity to 1 for solid bars
-      colors: ["#de0d61"], // Set the bar color
+      opacity: 1,
+      colors: ["#de0d61"],
     },
     tooltip: {
       shared: true,
       intersect: false,
-      enabled: true,
     },
     grid: {
       show: true,

@@ -26,7 +26,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="bg-backgrd">
+      <div className="bg-backgrd no-scrollbar">
         {isAuthenticated ? (
           <>
             <Sidebar isOpen={isDrawerOpen} setAuth={setIsAuthenticated} />
@@ -35,7 +35,7 @@ function App() {
               setAuth={setIsAuthenticated}
               theme={theme} setTheme={setTheme}
             />
-            <div>
+            <div className='no-scrollbar'>
               <Routes>
                 <Route path="/login" exact element={<Login />} />
                 <Route

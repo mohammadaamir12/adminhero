@@ -422,11 +422,13 @@ function Home({theme,setTheme}) {
     setIsOpen(!isOpen);
   };
   const handleToggle = () => {
+    console.log(theme);
+    localStorage.setItem('theme',theme)
     setTheme(theme === 'dark' ? 'light' :'dark')
     setIsToggled(prevState => !prevState);
   };
   return (
-    <div className="p-4 md:w-full lg:pl-36 bg-backgrd dark:bg-dark1">
+    <div className="p-4 md:w-full lg:pl-36 bg-backgrd dark:bg-dark1 no-scrollbar">
       {/* Fixed Button */}
       <div className="fixed right-0 top-36 z-10">
         <button
@@ -461,7 +463,7 @@ function Home({theme,setTheme}) {
   </div>
 )}
 
-      <div className="md:mx-5 lg:mx-7 mb-2 md:mb-0 lg:mb-0 relative h-12 justify-evenly bg-white dark:bg-dark2 rounded-sm flex items-center">
+      <div className="md:mx-5 lg:mx-7 mb-2 md:mb-0 lg:mb-0 relative h-12 justify-evenly bg-white dark:bg-dark2 rounded-sm flex items-center ">
         <div className="flex-1 mx-2">
           <DatePicker
             className="w-full dark:bg-darktxt"
@@ -542,7 +544,7 @@ function Home({theme,setTheme}) {
       <div className="relative bg-white dark:bg-dark2 rounded-sm mt-6 md:mx-5 lg:mx-7">
         {loading ? <ShimmerEffect /> : <LineCharts data={lineData} />}
       </div>
-      <div className="relative dark:bg-dark2 bg-white rounded-sm mt-6 md:mx-5 lg:mx-7">
+      <div className="relative dark:bg-dark2 bg-white rounded-sm mt-6 md:mx-5 lg:mx-7 ">
         <BarChart weekData={peakHourData} />
         {/* <LineCharts data={lineData} /> */}
       </div>

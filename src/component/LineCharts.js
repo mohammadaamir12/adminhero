@@ -3,8 +3,9 @@ import Chart from "react-apexcharts";
 
 const LineCharts = ({ data }) => {
   const color = "#00ff7b";
+  const check = localStorage.getItem('theme')
+  // console.log('line',typeof(check));
   
-
   const options = {
     chart: {
       type: "line",
@@ -15,7 +16,9 @@ const LineCharts = ({ data }) => {
     title: {
       text: "Visitors Count",
       align: "left",
-     
+      style:{
+        color:check==='dark'?'#000':'#fff'
+      }
     },
     xaxis: {
       categories: [
@@ -54,8 +57,15 @@ const LineCharts = ({ data }) => {
         text: "Days",
         style: {
           fontSize: "14px",
+          color:check==='dark'?'#000':'#fff'
         },
       },
+      // labels: {
+      //   style: {
+      //     // Change label color based on theme
+         
+      //   },
+      // },
     },
     yaxis: {
       labels: {
@@ -65,6 +75,7 @@ const LineCharts = ({ data }) => {
         text: "Visitors",
         style: {
           fontSize: "14px",
+          color:check==='dark'?'#000':'#fff'
         },
       },
       min: 20,
